@@ -19,29 +19,45 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibGNhY2VkYSIsImEiOiIzNmM4MGRlN2I4NDhiY2UxZjA4M
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
-    center: [-84.565449, 34.01341],
-    zoom: 8
+    center: [-84.58146, 34.01998],
+    zoom: 12
 });
 
+//**** CID BOUNDARY ****//
 map.on('load', function () {
 
     var layers = map.getStyle().layers;
     // Find the index of the first symbol layer in the map style
-    var firstSymbolId;
+    var townCenterBoundary;
     for (var i = 0; i < layers.length; i++) {
         if (layers[i].type === 'symbol') {
-            firstSymbolId = layers[i].id;
+            townCenterBoundary = layers[i].id;
             break;
         }
     }
+    // map.addSource("emps", {
+    //     type: "geojson",
+    //     data: "https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/75N_Employers.geojson"
+    // })
 
-    var CID = 'TownCenterCID.geojson'
     map.addLayer({
-        'id': 'urban-areas-fill',
+        'id': 'employee sites',
+        'type': 'circle',
+        'source': {
+            'type': 'vector',
+            'url': 'mapbox://lcaceda.1u1oiogr'
+        },
+        'source-layer': '75n-formap_corrected_2-5mun74'
+
+    });
+
+    // var CID = 'TownCenterCID.geojson'
+    map.addLayer({
+        'id': 'townCenter_boundary',
         'type': 'fill',
         'source': {
             'type': 'geojson',
-            'data': CID
+            'data': 'https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/TownCenterCID.geojson'
         },
         'layout': {},
         'paint': {
@@ -55,8 +71,10 @@ map.on('load', function () {
     // right before that layer in the stack, making it possible to put
     // 'overlays' anywhere in the layer stack.
     // Insert the layer beneath the first symbol layer.
-    }, firstSymbolId);
+    }, townCenterBoundary);
+
 });
+
 </script>
 
 
