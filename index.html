@@ -35,23 +35,7 @@ map.on('load', function () {
             break;
         }
     }
-    // map.addSource("emps", {
-    //     type: "geojson",
-    //     data: "https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/75N_Employers.geojson"
-    // })
-
-    map.addLayer({
-        'id': 'employee sites',
-        'type': 'circle',
-        'source': {
-            'type': 'vector',
-            'url': 'mapbox://lcaceda.1u1oiogr'
-        },
-        'source-layer': '75n-formap_corrected_2-5mun74'
-
-    });
-
-    // var CID = 'TownCenterCID.geojson'
+        // var CID = 'TownCenterCID.geojson'
     map.addLayer({
         'id': 'townCenter_boundary',
         'type': 'fill',
@@ -64,15 +48,42 @@ map.on('load', function () {
             'fill-color': '#f08',
             'fill-opacity': 0.4
         }
-    // This is the important part of this example: the addLayer
-    // method takes 2 arguments: the layer as an object, and a string
-    // representing another layer's name. if the other layer
-    // exists in the stylesheet already, the new layer will be positioned
-    // right before that layer in the stack, making it possible to put
-    // 'overlays' anywhere in the layer stack.
-    // Insert the layer beneath the first symbol layer.
     }, townCenterBoundary);
+    map.addSource('emps', {
+        type: 'geojson',
+        data: 'https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/75N_Employers.geojson'
+    });
 
+    map.addLayer({
+        'id': 'employee_sites',
+        'type': 'circle',
+        'source': 'emps',
+        'paint': {
+            'circle-radius': 10,
+            'circle-color': '#1EB6E0',
+            'circle-opacity': 0.8
+        }
+    });
+     map.on('click', function(e) {
+            var features = map.queryRenderedFeatures(e.point, {
+                layers: ['employee_sites']
+            });
+            if (!features.length) {
+                return;
+            }
+            var feature = features[0];
+            var popup = new mapboxgl.Popup()
+                .setLngLat(map.unproject(e.point))
+                .setHTML('<h3>'+ feature.properties.Name +'</h3>' +
+                    '<ul>' +
+                    '<li>Name: <b>' + feature.properties.Name + '</b></li>' +
+                    '<li># of Employees: <b>' + feature.properties.EmpNum + '</b></li>' +
+                    '<li>Pedestrian Fatalities: <b>' + feature.properties.PED_KIL + '</b></li>' +
+                    '<li>Cyclist Injuries: <b>' + feature.properties.CYC_INJ + '</b></li>' +
+                    '<li>Cyclist Fatalities: <b>' + feature.properties.CYC_KIL + '</b></li>' +
+                    '</ul>')
+                .addTo(map);
+        });
 });
 
 </script>
