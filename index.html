@@ -11,7 +11,9 @@
         #map { position:absolute; top:0; bottom:0; width:100%; }
     </style>
 </head>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
 <body>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
 
 <div id='map'></div>
 <script>
@@ -51,7 +53,7 @@ map.on('load', function () {
     }, townCenterBoundary);
     map.addSource('emps', {
         type: 'geojson',
-        data: 'https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/75N_Employers.geojson'
+        data: 'https://cdn.rawgit.com/lslangley/Town_Center_CID_Map/gh-pages/data/75N_Employers.geojson'
     });
 
     map.addLayer({
@@ -78,14 +80,18 @@ map.on('load', function () {
                     '<ul>' +
                     '<li>Name: <b>' + feature.properties.Name + '</b></li>' +
                     '<li># of Employees: <b>' + feature.properties.EmpNum + '</b></li>' +
-                    '<li>Pedestrian Fatalities: <b>' + feature.properties.PED_KIL + '</b></li>' +
-                    '<li>Cyclist Injuries: <b>' + feature.properties.CYC_INJ + '</b></li>' +
-                    '<li>Cyclist Fatalities: <b>' + feature.properties.CYC_KIL + '</b></li>' +
+                    '<li>Level: <b>' + feature.properties.Level + '</b></li>' +
+                    '<li>Street Address: <b>' + feature.properties.Street + '</b></li>' +
+                    '<li>City: <b>' + feature.properties.City + '</b></li>' +
                     '</ul>')
                 .addTo(map);
         });
 });
-
+map.addControl(new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+}));
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
 </script>
 
 
